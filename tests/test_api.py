@@ -57,6 +57,16 @@ class ApiTestCase(BaseTestCase):
         response = self.client.post('/zipcode/', data={'zip_code': 'adsffdsag'})
         self.assertEqual(400, response.status_code)
 
+    @httpretty.activate
+    def test_add_zipcode_with_unknown_code(self):
+
+        httpretty.register_uri(httpretty.GET, 'http://postmon.url/14020260',
+                               body='', status=404)
+
+        response = self.client.post('/zipcode/', data={'zip_code': 14020260})
+
+        self.assertEqual(400, response.status_code)
+
     def test_list_zipcode_successful(self):
 
         expected = [{

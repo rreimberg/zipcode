@@ -28,6 +28,8 @@ def add_zipcode():
     response = requests.get('{0}/{1}'.format(app.config['POSTMON_URL'], zip_code))
 
     # check status_code 200 or 404
+    if response.status_code == 404:
+        raise BadRequest('The zip_code is unknown for Postmon database')
 
     data = json.loads(response.content)
 
