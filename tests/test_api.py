@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import httpretty
 import json
 
 from .base import BaseTestCase
@@ -7,7 +8,22 @@ from .base import BaseTestCase
 
 class ApiTestCase(BaseTestCase):
 
+    @httpretty.activate
     def test_add_zipcode_successful(self):
+
+        postmon_response = """
+{"complemento": "at\\u00e9 489 - lado \\u00edmpar",
+"bairro": "Jd Am\\u00e9rica",
+"cidade": "Ribeir\\u00e3o Preto",
+"logradouro": "Avenida Presidente Vargas",
+"estado_info": {"area_km2": "248.222,362", "codigo_ibge": "35",
+"nome": "S\\u00e3o Paulo"},
+"cep": "14020260", "cidade_info":
+{"area_km2": "650,955", "codigo_ibge": "3543402"}, "estado": "SP"}
+        """
+
+        httpretty.register_uri(httpretty.GET, 'http://postmon.url/14020260',
+                               body=postmon_response)
 
         expected = {
             u'zip_code': u'14020260',

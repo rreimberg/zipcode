@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
 
 import json
+import requests
 
-from flask import Blueprint, jsonify
+from flask import Blueprint, current_app as app, jsonify, request
+
+from zipcode import db
+from zipcode.models import Zipcode
 
 api = Blueprint('api', __name__)
 
@@ -11,16 +15,27 @@ headers = {'content-type': 'application/json'}
 
 @api.route("/zipcode/", methods=["POST"])
 def add_zipcode():
-    """get the zip_code param, consult api.postmon.com.br/v1/cep/14020260
-    and save data"""
+    """get the zip_code param, consult Postmon service and save data
+    """
 
-    obj = {
-        'zip_code': '14020260',
-        'address': 'Avenida Presidente Vargas',
-        'neighborhood': 'Jd América',
-        'state': 'SP',
-        'city': 'Ribeirão Preto',
-    }
+    zip_code = request.form['zip_code']
+
+    response = requests.get('{0}/{1}'.format(app.config['POSTMON_URL'], zip_code))
+
+    # check status_code 200 or 404
+
+    data = json.loads(response.content)
+
+    obj = Zipcode(
+        zip_code=data['cep'],
+        address=data['logradouro'],
+        neighborhood=data['bairro'],
+        state=data['estado'],
+        city=data['cidade'],
+    )
+
+    db.session.add(obj)
+    db.session.commit()
 
     return jsonify(obj), 201, headers
 
