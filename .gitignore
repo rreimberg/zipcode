@@ -2,3 +2,4 @@
 *.py[co]
 cover/*
 .coverage
+zipcode/zipcode.db
