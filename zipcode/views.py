@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import json
+import re
 import requests
 
 from flask import Blueprint, current_app as app, jsonify, request
+from werkzeug.exceptions import BadRequest
 
 from zipcode import db
 from zipcode.models import Zipcode
@@ -19,6 +21,9 @@ def add_zipcode():
     """
 
     zip_code = request.form['zip_code']
+
+    if not re.match('[0-9]{8}$', zip_code):
+        raise BadRequest('zip_code param should be composed by 8 numbers')
 
     response = requests.get('{0}/{1}'.format(app.config['POSTMON_URL'], zip_code))
 

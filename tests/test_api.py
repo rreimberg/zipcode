@@ -41,6 +41,22 @@ class ApiTestCase(BaseTestCase):
 
         self.assertEqual(expected, data)
 
+    def test_add_zipcode_without_param_code(self):
+
+        response = self.client.post('/zipcode/')
+        self.assertEqual(400, response.status_code)
+
+        response = self.client.post('/zipcode/', data={'zip_code': ''})
+        self.assertEqual(400, response.status_code)
+
+    def test_add_zipcode_with_invalid_code(self):
+
+        response = self.client.post('/zipcode/', data={'zip_code': '14020-260'})
+        self.assertEqual(400, response.status_code)
+
+        response = self.client.post('/zipcode/', data={'zip_code': 'adsffdsag'})
+        self.assertEqual(400, response.status_code)
+
     def test_list_zipcode_successful(self):
 
         expected = [{
