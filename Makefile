@@ -1,5 +1,5 @@
 coverage:
-	.venv/bin/nosetests --with-cover --cover-package=desafio
+	.venv/bin/nosetests --with-cover --cover-package=zipcode
 
 clean:
 	find -iname *.pyc -delete
