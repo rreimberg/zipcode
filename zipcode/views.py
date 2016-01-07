@@ -52,17 +52,9 @@ def list_zipcode():
     """Return a list limited by limit request arg
     """
 
-    obj = [
-        {
-            'zip_code': '14020260',
-            'address': 'Avenida Presidente Vargas',
-            'neighborhood': 'Jd América',
-            'state': 'SP',
-            'city': 'Ribeirão Preto',
-        }
-    ]
+    query = Zipcode.query
 
-    return json.dumps(obj), 200, headers
+    return json.dumps([dict(zipcode) for zipcode in query.all()]), 200, headers
 
 
 @api.route("/zipcode/<zip_code>/", methods=["GET"])

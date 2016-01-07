@@ -16,4 +16,4 @@ setup:
 	.venv/bin/python manage.py create_db
 
 test:
-	.venv/bin/nosetests --rednose
+	.venv/bin/nosetests --rednose -s

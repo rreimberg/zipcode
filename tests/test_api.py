@@ -5,6 +5,9 @@ import json
 
 from .base import BaseTestCase
 
+from zipcode import db
+from zipcode.models import Zipcode
+
 
 class ApiTestCase(BaseTestCase):
 
@@ -68,6 +71,22 @@ class ApiTestCase(BaseTestCase):
         self.assertEqual(400, response.status_code)
 
     def test_list_zipcode_successful(self):
+
+        # get a empty list
+        response = self.client.get('/zipcode/')
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual('application/json', response.content_type)
+        self.assertEqual('[]', response.data)
+
+        zipcode = Zipcode(
+            zip_code=u'14020260',
+            address=u'Avenida Presidente Vargas',
+            neighborhood=u'Jd América',
+            state=u'SP',
+            city=u'Ribeirão Preto',
+        )
+        db.session.add(zipcode)
 
         expected = [{
             u'zip_code': u'14020260',
