@@ -170,17 +170,31 @@ class ApiTestCase(BaseTestCase):
 
     def test_delete_zipcode_successful(self):
 
+        zipcode = Zipcode(
+            zip_code=u'14020260',
+            address=u'Avenida Presidente Vargas',
+            neighborhood=u'Jd América',
+            state=u'SP',
+            city=u'Ribeirão Preto',
+        )
+        db.session.add(zipcode)
+
         response = self.client.delete('/zipcode/14020260/')
 
         self.assertEqual(204, response.status_code)
-        self.assertEqual('application/json', response.content_type)
-
         self.assertEqual('', response.data)
 
-    def test_get_zipcode_successful(self):
+        self.assertEqual(0, Zipcode.query.count())
+        n_zipcode = Zipcode.query.filter_by(zip_code='14020260').first()
 
-        response = self.client.get('/zipcode/14020260/')
+        self.assertIsNone(n_zipcode)
+
+    def test_delete_zipcode_with_non_existent_code(self):
+
+        response = self.client.delete('/zipcode/14020260/')
         self.assertEqual(404, response.status_code)
+
+    def test_get_zipcode_successful(self):
 
         zipcode = Zipcode(
             zip_code=u'14020260',
@@ -206,3 +220,8 @@ class ApiTestCase(BaseTestCase):
         data = json.loads(response.data)
 
         self.assertEqual(expected, data)
+
+    def test_get_zipcode_with_non_existent_code(self):
+
+        response = self.client.get('/zipcode/14020260/')
+        self.assertEqual(404, response.status_code)

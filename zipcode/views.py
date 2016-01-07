@@ -77,4 +77,10 @@ def get_zipcode(zip_code):
 def delete_zipcode(zip_code):
     """Delete zip_code record
     """
-    return '', 204, headers
+
+    zipcode = Zipcode.query.filter_by(zip_code=zip_code).first_or_404()
+
+    db.session.delete(zipcode)
+    db.session.commit()
+
+    return '', 204
