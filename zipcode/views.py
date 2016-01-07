@@ -69,15 +69,8 @@ def get_zipcode(zip_code):
     """Return a zip_code detail acording to specified param
     """
 
-    obj = {
-        'zip_code': '14020260',
-        'address': 'Avenida Presidente Vargas',
-        'neighborhood': 'Jd América',
-        'state': 'SP',
-        'city': 'Ribeirão Preto',
-    }
-
-    return jsonify(obj), 200, headers
+    zipcode = Zipcode.query.filter_by(zip_code=zip_code).first_or_404()
+    return jsonify(zipcode), 200
 
 
 @api.route("/zipcode/<zip_code>/", methods=["DELETE"])

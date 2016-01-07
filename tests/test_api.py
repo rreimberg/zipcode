@@ -179,6 +179,18 @@ class ApiTestCase(BaseTestCase):
 
     def test_get_zipcode_successful(self):
 
+        response = self.client.get('/zipcode/14020260/')
+        self.assertEqual(404, response.status_code)
+
+        zipcode = Zipcode(
+            zip_code=u'14020260',
+            address=u'Avenida Presidente Vargas',
+            neighborhood=u'Jd América',
+            state=u'SP',
+            city=u'Ribeirão Preto',
+        )
+        db.session.add(zipcode)
+
         expected = {
             u'zip_code': u'14020260',
             u'address': u'Avenida Presidente Vargas',
