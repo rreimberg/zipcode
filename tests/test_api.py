@@ -104,6 +104,70 @@ class ApiTestCase(BaseTestCase):
 
         self.assertEqual(expected, data)
 
+    def test_list_zipcode_with_limit(self):
+
+        zipcode1 = Zipcode(
+            zip_code=u'14020260',
+            address=u'Avenida Presidente Vargas',
+            neighborhood=u'Jd América',
+            state=u'SP',
+            city=u'Ribeirão Preto',
+        )
+
+        zipcode2 = Zipcode(
+            zip_code=u'14020261',
+            address=u'Avenida Presidente',
+            neighborhood=u'Jd América',
+            state=u'SP',
+            city=u'Ribeirão Preto',
+        )
+
+        zipcode3 = Zipcode(
+            zip_code=u'14020263',
+            address=u'Avenida Vargas',
+            neighborhood=u'Jd América',
+            state=u'SP',
+            city=u'Ribeirão Preto',
+        )
+
+        db.session.add(zipcode1)
+        db.session.add(zipcode2)
+        db.session.add(zipcode3)
+
+        response = self.client.get('/zipcode/?limit=asd')
+        self.assertEqual(400, response.status_code)
+
+        response = self.client.get('/zipcode/?limit=-1')
+        self.assertEqual(400, response.status_code)
+
+        response = self.client.get('/zipcode/?limit=0')
+        self.assertEqual(200, response.status_code)
+        self.assertEqual('[]', response.data)
+
+        response = self.client.get('/zipcode/?limit=2')
+        self.assertEqual(200, response.status_code)
+        data = json.loads(response.data)
+
+        self.assertEqual(2, len(data))
+
+        response = self.client.get('/zipcode/?limit=5')
+        self.assertEqual(200, response.status_code)
+        data = json.loads(response.data)
+
+        self.assertEqual(3, len(data))
+
+        response = self.client.get('/zipcode/?limit=')
+        self.assertEqual(200, response.status_code)
+        data = json.loads(response.data)
+
+        self.assertEqual(3, len(data))
+
+        response = self.client.get('/zipcode/')
+        self.assertEqual(200, response.status_code)
+        data = json.loads(response.data)
+
+        self.assertEqual(3, len(data))
+
     def test_delete_zipcode_successful(self):
 
         response = self.client.delete('/zipcode/14020260/')

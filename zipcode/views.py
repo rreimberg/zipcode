@@ -54,6 +54,13 @@ def list_zipcode():
 
     query = Zipcode.query
 
+    limit = request.args.get('limit', None)
+    if limit:
+        if not re.match('^[0-9]+$', limit):
+            raise BadRequest('Invalid limit value')
+
+        query = query.limit(limit)
+
     return json.dumps([dict(zipcode) for zipcode in query.all()]), 200, headers
 
 
